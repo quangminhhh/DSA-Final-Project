@@ -1,18 +1,104 @@
-@model TModel
-
+@model List<int>
 @{
-    Layout = null;
+ViewData["Title"] = "Binary Search Tree";
 }
 
-<!DOCTYPE html>
+<h1>Binary Search Tree</h1>
 
-<html>
-<head>
-    <title>title</title>
-</head>
-<body>
-<div>
-      
+@if (TempData["Message"] != null)
+{
+var message = TempData["Message"].ToString();
+bool isError = message.StartsWith("Insert failed") || message.StartsWith("Delete failed");
+
+<div class="alert @(isError ? "alert-danger" : "alert-info")">
+    @message
 </div>
-</body>
-</html>
+}
+
+
+@if (ViewBag.SearchResult != null)
+{
+<div class="alert alert-success">
+    @ViewBag.SearchResult
+</div>
+}
+
+
+<div class="row mt-4">
+    <div class="col-md-6">
+        <h3>Traverse Tree</h3>
+        <form asp-action="Traverse" method="get">
+            <div class="form-group">
+                <select name="order" class="form-control" required>
+                    <option value="InOrder">In-Order</option>
+                    <option value="PreOrder">Pre-Order</option>
+                    <option value="PostOrder">Post-Order</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Traverse</button>
+        </form>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-12">
+        <h3>Traverse Result @if(ViewBag.TraverseOrder != null){ <text>(@ViewBag.TraverseOrder)</text> }</h3>
+        @if (Model.Count == 0)
+        {
+        <p>BST is empty.</p>
+        }
+        else
+        {
+        <ul>
+            @foreach (var item in Model)
+            {
+            <li>@item</li>
+            }
+        </ul>
+        }
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-6">
+        <h3>Insert</h3>
+        <form asp-action="Insert" method="post">
+            <div class="form-group">
+                <input type="number" name="data" class="form-control" placeholder="Enter value to insert" required />
+            </div>
+            <button type="submit" class="btn btn-success">Insert</button>
+        </form>
+    </div>
+
+    <div class="col-md-6">
+        <!-- Form Delete -->
+        <h3>Delete</h3>
+        <form asp-action="Delete" method="post">
+            <div class="form-group">
+                <input type="number" name="data" class="form-control" placeholder="Enter value to delete" required />
+            </div>
+            <button type="submit" class="btn btn-danger">Delete</button>
+        </form>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-6">
+        <!-- Form Search -->
+        <h3>Search</h3>
+        <form asp-action="Search" method="get">
+            <div class="form-group">
+                <input type="number" name="target" class="form-control" placeholder="Enter value to search" required />
+            </div>
+            <button type="submit" class="btn btn-info">Search</button>
+        </form>
+    </div>
+
+    <div class="col-md-6">
+        <!-- Form Visualization -->
+        <h3>Visualize BST</h3>
+        <a href="@Url.Action("Visualization", "BinarySearchTree")" class="btn btn-primary mt-4">View Visualization</a>
+    </div>
+</div>
+
+

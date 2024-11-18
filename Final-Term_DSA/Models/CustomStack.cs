@@ -3,26 +3,26 @@ using System.Collections.Generic;
 
 namespace CircularLinkedListApp.Models
 {
-    public class Stack<T> where T : IComparable<T>
+    public class CustomStack<T> where T : IComparable<T>
     {
         private StackNode<T> top;
 
-        public Stack()
+        public CustomStack()
         {
             top = null;
         }
 
-        // Kiểm tra stack có rỗng không
+        // Kiem tra stack rong
         public bool IsEmpty()
         {
             return top == null;
         }
 
-        // Push một phần tử vào stack
+        // Push mot ptu vao stack
         public bool Push(T data)
         {
             if (Contains(data))
-                return false; // Không cho phép trùng lặp giá trị
+                return false; // Trung gia tri
 
             StackNode<T> newNode = new StackNode<T>(data);
             newNode.Next = top;
@@ -30,7 +30,7 @@ namespace CircularLinkedListApp.Models
             return true;
         }
 
-        // Pop phần tử đầu stack
+        // pop ptu dau stack
         public bool Pop(out T data)
         {
             if (IsEmpty())
@@ -44,7 +44,7 @@ namespace CircularLinkedListApp.Models
             return true;
         }
 
-        // Peek phần tử đầu stack mà không loại bỏ
+        // Peek ptu stack (K loai bo)
         public bool Peek(out T data)
         {
             if (IsEmpty())
@@ -57,7 +57,7 @@ namespace CircularLinkedListApp.Models
             return true;
         }
 
-        // Tìm kiếm một phần tử trong stack
+        // tim kiem
         public bool Search(T target)
         {
             if (IsEmpty()) return false;
@@ -185,11 +185,10 @@ namespace CircularLinkedListApp.Models
             data[high] = temp1;
             return i + 1;
         }
-
-        // Các phương thức bổ sung
+        
 
         // 1. Gộp hai stack
-        public void Merge(Stack<T> stack2)
+        public void Merge(CustomStack<T> stack2)
         {
             if (stack2.IsEmpty())
                 return;

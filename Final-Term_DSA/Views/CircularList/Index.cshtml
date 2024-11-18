@@ -1,0 +1,224 @@
+@model List<int>
+@{
+    ViewData["Title"] = "Circular Linked List";
+}
+
+<h1>Circular Linked List</h1>
+
+<!-- Hiển thị thông báo từ TempData -->
+@if (TempData["Message"] != null)
+{
+    var message = TempData["Message"].ToString();
+    bool isError = message.StartsWith("Insert failed") || message.StartsWith("Merge failed");
+
+    <div class="alert @(isError ? "alert-danger" : "alert-info")">
+        @message
+    </div>
+}
+
+<!-- Phần hiển thị danh sách dạng văn bản -->
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Nodes</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+                @if (Model.Count == 0)
+                {
+                    <p>List is empty.</p>
+                }
+                else
+                {
+                    <ul>
+                        @foreach (var item in Model)
+                        {
+                            <li>@item</li>
+                        }
+                    </ul>
+                }
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<!-- Các Form Thao Tác -->
+
+<div class="row">
+    <div class="col-md-6">
+        <!-- Form chèn vào đầu -->
+        <h3>Insert at Beginning 3</h3>
+        <form asp-action="InsertAtBeginning" method="post">
+            <div class="form-group">
+                <input type="number" name="data" class="form-control" placeholder="Enter value" required />
+            </div>
+            <button type="submit" class="btn btn-primary mt-2">Insert</button>
+        </form>
+    </div>
+
+    <div class="col-md-6">
+        <!-- Form chèn vào cuối -->
+        <h3>Insert at End</h3>
+        <form asp-action="InsertAtEnd" method="post">
+            <div class="form-group">
+                <input type="number" name="data" class="form-control" placeholder="Enter value" required />
+            </div>
+            <button type="submit" class="btn btn-primary mt-2">Insert</button>
+        </form>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-6">
+        <!-- Form chèn sau một nút -->
+        <h3>Insert After</h3>
+        <form asp-action="InsertAfter" method="post">
+            <div class="form-group">
+                <input type="number" name="target" class="form-control " placeholder="Target Value" required />
+            </div>
+            <div class="form-group">
+                <input type="number" name="data" class="form-control mt-2" placeholder="New Node Value" required />
+            </div>
+            <button type="submit" class="btn btn-primary mt-2">Insert</button>
+        </form>
+    </div>
+
+    <div class="col-md-6">
+        <!-- Form tìm kiếm -->
+        <h3>Search</h3>
+        <form asp-action="Search" method="get">
+            <div class="form-group">
+                <input type="number" name="target" class="form-control" placeholder="Value to Search" required />
+            </div>
+            <button type="submit" class="btn btn-info mt-2">Search</button>
+        </form>
+        @if (ViewBag.Result != null)
+        {
+            <div class="alert alert-success mt-2">@ViewBag.Result</div>
+        }
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-6">
+        <!-- Các nút thao tác khác -->
+        <h3>Other Operations</h3>
+        <form asp-action="RemoveFirst" method="post" style="display:inline-block; margin-right:10px;">
+            <button type="submit" class="btn btn-danger">Remove First</button>
+        </form>
+        <form asp-action="RemoveLast" method="post" style="display:inline-block; margin-right:10px;">
+            <button type="submit" class="btn btn-danger">Remove Last</button>
+        </form>
+        <form asp-action="Reverse" method="post" style="display:inline-block; margin-right:10px;">
+            <button type="submit" class="btn btn-warning">Reverse List</button>
+        </form>
+        <form asp-action="SortSelection" method="post" style="display:inline-block; margin-right:10px;">
+            <button type="submit" class="btn btn-secondary">Sort (Selection)</button>
+        </form>
+        <form asp-action="SortQuick" method="post" style="display:inline-block; margin-right:10px;">
+            <button type="submit" class="btn btn-secondary mt-2">Sort (Quick)</button>
+        </form>
+    </div>
+
+    <div class="col-md-6">
+        <!-- Form gộp danh sách -->
+        <h3>Merge Lists</h3>
+        <form asp-action="Merge" method="post">
+            <div class="form-group">
+                <input type="text" name="otherList" class="form-control" placeholder="Enter numbers separated by comma" required />
+            </div>
+            <button type="submit" class="btn btn-primary mt-2">Merge</button>
+        </form>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-6">
+        <h3>Remove All Nodes Greater Than</h3>
+        <form asp-action="RemoveAllGreaterThan" method="post">
+            <div class="form-group">
+                <input type="number" name="value" class="form-control" placeholder="Value" required />
+            </div>
+            <button type="submit" class="btn btn-danger mt-2">Remove</button>
+        </form>
+    </div>
+</div>
+
+<h2 class="mt-5">Visualization</h2>
+<div id="linkedListVisualization"></div>
+
+@section Scripts {
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script>
+        const data = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model));
+    
+        const width = 800;
+        const height = 200;
+    
+        const svg = d3.select("#linkedListVisualization")
+            .append("svg")
+            .attr("width", width)
+            .attr("height", height);
+    
+        if (data.length === 0) {
+            svg.append("text")
+                .attr("x", width / 2)
+                .attr("y", height / 2)
+                .attr("text-anchor", "middle")
+                .text("List is empty.");
+        } else {
+            const nodeWidth = 50;
+            const nodeHeight = 30;
+            const spacing = 100;
+    
+            // ve hinh chu nhat
+            data.forEach((d, i) => {
+                svg.append("rect")
+                    .attr("x", 50 + i * spacing)
+                    .attr("y", height / 2 - nodeHeight / 2)
+                    .attr("width", nodeWidth)
+                    .attr("height", nodeHeight)
+                    .attr("fill", "#69b3a2");
+    
+                svg.append("text")
+                    .attr("x", 50 + i * spacing + nodeWidth / 2)
+                    .attr("y", height / 2 + 5)
+                    .attr("text-anchor", "middle")
+                    .attr("fill", "white")
+                    .text(d);
+    
+                if (i < data.length - 1) {
+                    svg.append("line")
+                        .attr("x1", 50 + i * spacing + nodeWidth)
+                        .attr("y1", height / 2)
+                        .attr("x2", 50 + (i + 1) * spacing)
+                        .attr("y2", height / 2)
+                        .attr("stroke", "black")
+                        .attr("marker-end", "url(#arrow)");
+                } else {
+                    svg.append("line")
+                        .attr("x1", 50 + i * spacing + nodeWidth)
+                        .attr("y1", height / 2)
+                        .attr("x2", 50)
+                        .attr("y2", height / 2)
+                        .attr("stroke", "black")
+                        .attr("marker-end", "url(#arrow)");
+                }
+            });
+    
+            svg.append("defs").append("marker")
+                .attr("id", "arrow")
+                .attr("viewBox", "0 0 10 10")
+                .attr("refX", 5)
+                .attr("refY", 5)
+                .attr("markerWidth", 6)
+                .attr("markerHeight", 6)
+                .attr("orient", "auto-start-reverse")
+                .append("path")
+                .attr("d", "M 0 0 L 10 5 L 0 10 z")
+                .attr("fill", "black");
+        }
+    </script>
+}

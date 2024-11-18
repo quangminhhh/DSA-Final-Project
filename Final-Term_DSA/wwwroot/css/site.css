@@ -20,3 +20,31 @@ html {
 body {
   margin-bottom: 60px;
 }
+/* CSS cho Visualization */
+#stackVisualization {
+  margin-top: 20px;
+}
+
+#stackVisualization rect {
+  stroke: #333;
+  stroke-width: 2px;
+  rx: 5px; 
+}
+
+#stackVisualization text {
+  font-size: 14px;
+  font-weight: bold;
+}
+
+
+.node:hover circle {
+  fill: #ff7f0e;
+  stroke: #ff5722;
+  stroke-width: 3px;
+}
+
+.link {
+  stroke: #999;
+  stroke-width: 2px;
+}
+

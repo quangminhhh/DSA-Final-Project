@@ -1,18 +1,220 @@
-@model TModel
-
+@model List<int>
 @{
-    Layout = null;
+    ViewData["Title"] = "Stack";
 }
 
-<!DOCTYPE html>
+<h1>Stack</h1>
 
-<html>
-<head>
-    <title>title</title>
-</head>
-<body>
-<div>
-      
+@if (TempData["Message"] != null)
+{
+    var message = TempData["Message"].ToString();
+    bool isError = message.StartsWith("Push failed") || message.StartsWith("Merge failed");
+
+    <div class="alert @(isError ? "alert-danger" : "alert-info")">
+        @message
+    </div>
+}
+
+@if (ViewBag.PeekResult != null)
+{
+    <div class="alert alert-success">
+        @ViewBag.PeekResult
+    </div>
+}
+
+@if (ViewBag.SearchResult != null)
+{
+    <div class="alert alert-success">
+        @ViewBag.SearchResult
+    </div>
+}
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Stack Elements</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+                @if (Model.Count == 0)
+                {
+                    <p>Stack is empty.</p>
+                }
+                else
+                {
+                    <ul>
+                        @foreach (var item in Model)
+                        {
+                            <li>@item</li>
+                        }
+                    </ul>
+                }
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+
+<div class="row">
+    <div class="col-md-6">
+        <!-- Form Push -->
+        <h3>Push</h3>
+        <form asp-action="Push" method="post">
+            <div class="form-group">
+                <input type="number" name="data" class="form-control" placeholder="Enter value to push" required />
+            </div>
+            <button type="submit" class="btn btn-primary mt-2">Push</button>
+        </form>
+    </div>
+
+    <div class="col-md-6">
+        <!-- Form Pop -->
+        <h3>Pop</h3>
+        <form asp-action="Pop" method="post">
+            <button type="submit" class="btn btn-danger">Pop</button>
+        </form>
+    </div>
 </div>
-</body>
-</html>
+
+<div class="row mt-4">
+    <div class="col-md-6">
+        <!-- Form Peek -->
+        <h3>Peek</h3>
+        <form asp-action="Peek" method="get">
+            <button type="submit" class="btn btn-info">Peek</button>
+        </form>
+    </div>
+
+    <div class="col-md-6">
+        <!-- Form Search -->
+        <h3>Search</h3>
+        <form asp-action="Search" method="get">
+            <div class="form-group">
+                <input type="number" name="target" class="form-control" placeholder="Enter value to search" required />
+            </div>
+            <button type="submit" class="btn btn-success mt-2">Search</button>
+        </form>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-6">
+        <!-- Form Sort Selection -->
+        <h3>Sort (Selection Sort)</h3>
+        <form asp-action="SortSelection" method="post">
+            <button type="submit" class="btn btn-secondary">Sort Stack</button>
+        </form>
+    </div>
+
+    <div class="col-md-6">
+        <!-- Form Sort Quick -->
+        <h3>Sort (Quick Sort)</h3>
+        <form asp-action="SortQuick" method="post">
+            <button type="submit" class="btn btn-secondary">Sort Stack</button>
+        </form>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-6">
+        <!-- Form Merge -->
+        <h3>Merge Stacks</h3>
+        <form asp-action="Merge" method="post">
+            <div class="form-group">
+                <input type="text" name="otherStack" class="form-control" placeholder="Enter numbers separated by comma" required />
+            </div>
+            <button type="submit" class="btn btn-primary mt-2">Merge</button>
+        </form>
+    </div>
+
+    <div class="col-md-6">
+        <!-- Form Reverse -->
+        <h3>Reverse Stack</h3>
+        <form asp-action="Reverse" method="post">
+            <button type="submit" class="btn btn-warning">Reverse Stack</button>
+        </form>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-6">
+        <h3>Remove All Elements Greater Than</h3>
+        <form asp-action="RemoveAllGreaterThan" method="post">
+            <div class="form-group">
+                <input type="number" name="value" class="form-control" placeholder="Enter value" required />
+            </div>
+            <button type="submit" class="btn btn-danger mt-2">Remove</button>
+        </form>
+    </div>
+</div>
+
+<h2 class="mt-5">Visualization</h2>
+<div id="stackVisualization"></div>
+
+
+@section Scripts {
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script>
+        const data = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model));
+
+        const width = 800;
+        const height = 200;
+
+        const svg = d3.select("#stackVisualization")
+            .append("svg")
+            .attr("width", width)
+            .attr("height", height);
+
+        if (data.length === 0) {
+            svg.append("text")
+                .attr("x", width / 2)
+                .attr("y", height / 2)
+                .attr("text-anchor", "middle")
+                .text("Stack is empty.");
+        } else {
+            const nodeWidth = 100;
+            const nodeHeight = 30;
+            const spacing = 120;
+
+            data.forEach((d, i) => {
+                svg.append("rect")
+                    .attr("x", 50 + i * spacing)
+                    .attr("y", height / 2 - nodeHeight / 2)
+                    .attr("width", nodeWidth)
+                    .attr("height", nodeHeight)
+                    .attr("fill", "#ff7f0e");
+
+                svg.append("text")
+                    .attr("x", 50 + i * spacing + nodeWidth / 2)
+                    .attr("y", height / 2 + 5)
+                    .attr("text-anchor", "middle")
+                    .attr("fill", "white")
+                    .text(d);
+
+                if (i < data.length - 1) {
+                    svg.append("line")
+                        .attr("x1", 50 + i * spacing + nodeWidth)
+                        .attr("y1", height / 2)
+                        .attr("x2", 50 + (i + 1) * spacing)
+                        .attr("y2", height / 2)
+                        .attr("stroke", "black")
+                        .attr("marker-end", "url(#arrow)");
+                }
+            });
+
+            svg.append("defs").append("marker")
+                .attr("id", "arrow")
+                .attr("viewBox", "0 0 10 10")
+                .attr("refX", 5)
+                .attr("refY", 5)
+                .attr("markerWidth", 6)
+                .attr("markerHeight", 6)
+                .attr("orient", "auto-start-reverse")
+                .append("path")
+                .attr("d", "M 0 0 L 10 5 L 0 10 z")
+                .attr("fill", "black");
+        }
+    </script>
+}
