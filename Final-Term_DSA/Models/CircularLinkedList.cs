@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 namespace CircularLinkedListApp.Models
 {
+    // Mot so bien bat buoc dung int de code logic de hon
     public class CircularLinkedList<T> where T : IComparable<T>
     {
         private Node<T> head;

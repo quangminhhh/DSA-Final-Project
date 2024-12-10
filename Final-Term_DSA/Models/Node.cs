@@ -4,6 +4,7 @@ namespace CircularLinkedListApp.Models
 {
     public class Node<T>
     {
+        // maybe la nhu nay
         public T Data { get; set; }
         public Node<T> Next { get; set; }
 
