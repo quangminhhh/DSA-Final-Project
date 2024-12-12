@@ -2,153 +2,182 @@ using Microsoft.AspNetCore.Mvc;
 using CircularLinkedListApp.Models;
 using System.Collections.Generic;
 using System.Linq;
+using System;
 
 namespace CircularLinkedListApp.Controllers
 {
     public class CircularListController : Controller
     {
-        // Tạo một danh sách liên kết vòng tĩnh để lưu trữ dữ liệu
-        private static CircularLinkedList<int> list = new CircularLinkedList<int>();
+        // Danh sách chính
+        private static CircularLinkedList mainList = new CircularLinkedList();
+        // Danh sách phụ
+        private static CircularLinkedList secondaryList = new CircularLinkedList();
 
         // GET: CircularList
         public IActionResult Index()
         {
-            var data = list.PrintList();
+            var data = mainList.PrintList();                    // Dữ liệu cho mainList
+            var secondaryData = secondaryList.PrintList();      // Dữ liệu cho secondaryList
+            ViewBag.SecondaryData = secondaryData;
             return View(data);
         }
 
-        // POST: InsertAtBeginning
+        // -------------------- Main List Actions --------------------
+
         [HttpPost]
-        public IActionResult InsertAtBeginning(int data)
+        public IActionResult InsertAtBeginning(int number, string title, string author, string publisher, int year, string isbn)
         {
-            bool result = list.InsertAtBeginningUnique(data);
-            TempData["Message"] = result ? "Inserted at the beginning successfully." : "Insert failed: Value already exists in the list.";
+            var newBook = new Book(number, title, author, publisher, year, isbn);
+            bool result = mainList.InsertAtBeginningUnique(newBook);
+            TempData["Message"] = result 
+                ? "Inserted at the beginning successfully." 
+                : "Insert failed: book with this Number already exists in the list.";
             return RedirectToAction("Index");
         }
 
-        // POST: InsertAtEnd
         [HttpPost]
-        public IActionResult InsertAtEnd(int data)
+        public IActionResult InsertAtEnd(int number, string title, string author, string publisher, int year, string isbn)
         {
-            bool result = list.InsertAtEndUnique(data);
-            TempData["Message"] = result ? "Inserted at the end successfully." : "Insert failed: Value already exists in the list.";
+            var newBook = new Book(number, title, author, publisher, year, isbn);
+            bool result = mainList.InsertAtEndUnique(newBook);
+            TempData["Message"] = result 
+                ? "Inserted at the end successfully." 
+                : "Insert failed: book with this Number already exists in the list.";
             return RedirectToAction("Index");
         }
 
-        // POST: InsertAfter
         [HttpPost]
-        public IActionResult InsertAfter(int target, int data)
+        public IActionResult InsertAfter(int targetNumber, int dataNumber, string title, string author, string publisher, int year, string isbn)
         {
-            bool result = list.InsertAfterUnique(target, data);
-            TempData["Message"] = result ? "Inserted after target successfully." : "Insert failed: Value already exists or target not found.";
+            var targetBook = new Book(targetNumber, "N/A", "N/A", "N/A", 2000, "N/A");
+            var newBook = new Book(dataNumber, title, author, publisher, year, isbn);
+
+            bool result = mainList.InsertAfterUnique(targetBook, newBook);
+            TempData["Message"] = result 
+                ? "Inserted after target successfully." 
+                : "Insert failed: book with this Number already exists or target not found.";
             return RedirectToAction("Index");
         }
 
-
-        // POST: RemoveFirst
         [HttpPost]
         public IActionResult RemoveFirst()
         {
-            bool result = list.RemoveFirst();
-            TempData["Message"] = result ? "Removed first node successfully." : "List is empty.";
+            bool result = mainList.RemoveFirst();
+            TempData["Message"] = result 
+                ? "Removed first node successfully." 
+                : "List is empty.";
             return RedirectToAction("Index");
         }
 
-        // POST: RemoveLast
         [HttpPost]
         public IActionResult RemoveLast()
         {
-            bool result = list.RemoveLast();
-            TempData["Message"] = result ? "Removed last node successfully." : "List is empty.";
+            bool result = mainList.RemoveLast();
+            TempData["Message"] = result 
+                ? "Removed last node successfully." 
+                : "List is empty.";
             return RedirectToAction("Index");
         }
 
-        // POST: RemoveAfter
         [HttpPost]
-        public IActionResult RemoveAfter(int target)
+        public IActionResult RemoveAfter(int targetNumber)
         {
-            bool result = list.RemoveAfter(target);
-            TempData["Message"] = result ? "Removed node after target successfully." : "Target not found.";
+            var targetBook = new Book(targetNumber, "N/A", "N/A", "N/A", 2000, "N/A");
+            bool result = mainList.RemoveAfter(targetBook);
+            TempData["Message"] = result 
+                ? "Removed node after target successfully." 
+                : "Target not found.";
             return RedirectToAction("Index");
         }
 
-        // GET: Search
-        public IActionResult Search(int target)
+        public IActionResult Search(int targetNumber)
         {
-            var node = list.Search(target);
+            var targetBook = new Book(targetNumber, "N/A", "N/A", "N/A", 2000, "N/A");
+            var node = mainList.Search(targetBook);
             if (node != null)
             {
-                ViewBag.Result = $"Found: {node.Data}";
+                ViewBag.Result = $"Found: {node.Data.ToString()}";
             }
             else
             {
                 ViewBag.Result = "Not found.";
             }
-            return View("Index", list.PrintList());
+            return View("Index", mainList.PrintList());
         }
 
-        // POST: SortSelection
         [HttpPost]
         public IActionResult SortSelection()
         {
-            list.SelectionSort();
+            mainList.SelectionSort();
             TempData["Message"] = "List sorted using Selection Sort.";
             return RedirectToAction("Index");
         }
 
-        // POST: SortQuick
         [HttpPost]
         public IActionResult SortQuick()
         {
-            list.QuickSort();
+            mainList.QuickSort();
             TempData["Message"] = "List sorted using Quick Sort.";
             return RedirectToAction("Index");
         }
 
-        // POST: Merge
         [HttpPost]
-        public IActionResult Merge(string otherList)
+        public IActionResult RemoveAllGreaterThan(int value)
         {
-            if (!string.IsNullOrEmpty(otherList))
-            {
-                var numbers = otherList.Split(',').Select(s => 
-                {
-                    int.TryParse(s.Trim(), out int num);
-                    return num;
-                }).ToArray();
+            mainList.RemoveAll(x => x.Number > value);
+            TempData["Message"] = $"All nodes with Number greater than {value} removed.";
+            return RedirectToAction("Index");
+        }
 
-                var newList = new CircularLinkedList<int>();
-                foreach (var item in numbers)
-                {
-                    if (item != 0) // Giả sử 0 là giá trị không hợp lệ hoặc bỏ qua
-                        newList.InsertAtEnd(item);
-                }
-                list.Merge(newList);
+        [HttpPost]
+        public IActionResult Reverse()
+        {
+            mainList.Reverse();
+            TempData["Message"] = "List reversed successfully.";
+            return RedirectToAction("Index");
+        }
+
+        // -------------------- Secondary List Actions --------------------
+        [HttpPost]
+        public IActionResult InsertAtEnd_Secondary(int number, string title, string author, string publisher, int year, string isbn)
+        {
+            var newBook = new Book(number, title, author, publisher, year, isbn);
+            bool result = secondaryList.InsertAtEndUnique(newBook);
+            TempData["Message"] = result 
+                ? "Inserted at the end of secondary list successfully." 
+                : "Insert failed: book with this Number already exists in secondary list.";
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        public IActionResult MergeLists()
+        {
+            if (!secondaryList.IsEmpty())
+            {
+                mainList.Merge(secondaryList);
+                secondaryList = new CircularLinkedList();
                 TempData["Message"] = "Lists merged successfully.";
             }
             else
             {
-                TempData["Message"] = "No data provided to merge.";
+                TempData["Message"] = "Secondary list is empty, nothing to merge.";
             }
             return RedirectToAction("Index");
         }
 
-        // POST: RemoveAllGreaterThan
-        [HttpPost]
-        public IActionResult RemoveAllGreaterThan(int value)
+        // -------------------- Details Action --------------------
+        public IActionResult Details(int number)
         {
-            list.RemoveAll(x => x > value);
-            TempData["Message"] = $"All nodes with value greater than {value} removed.";
-            return RedirectToAction("Index");
-        }
+            var targetBook = new Book(number, "N/A", "N/A", "N/A", 2000, "N/A");
+            var node = mainList.Search(targetBook);
+            if (node == null)
+            {
+                TempData["Message"] = "Node not found.";
+                return RedirectToAction("Index");
+            }
 
-        // POST: Reverse
-        [HttpPost]
-        public IActionResult Reverse()
-        {
-            list.Reverse();
-            TempData["Message"] = "List reversed successfully.";
-            return RedirectToAction("Index");
+            var book = node.Data; // Book tìm thấy
+            return View(book);
         }
     }
 }

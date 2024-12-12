@@ -1,70 +1,70 @@
-@model List<int>
+@model List<CircularLinkedListApp.Models.Book>
 @{
     ViewData["Title"] = "Circular Linked List";
+    var secondaryData = ViewBag.SecondaryData as List<CircularLinkedListApp.Models.Book>;
 }
 
 <h1>Circular Linked List</h1>
 
-<!-- Hiển thị thông báo từ TempData -->
 @if (TempData["Message"] != null)
 {
     var message = TempData["Message"].ToString();
     bool isError = message.StartsWith("Insert failed") || message.StartsWith("Merge failed");
-
-    <div class="alert @(isError ? "alert-danger" : "alert-info")">
-        @message
-    </div>
+    <div class="alert @(isError ? "alert-danger" : "alert-info")">@message</div>
 }
 
-<!-- Phần hiển thị danh sách dạng văn bản -->
+<h2>Main List</h2>
 <table class="table table-bordered">
     <thead>
-        <tr>
-            <th>Nodes</th>
-        </tr>
+    <tr>
+        <th>Nodes (Display as bookX)</th>
+    </tr>
     </thead>
     <tbody>
-        <tr>
-            <td>
-                @if (Model.Count == 0)
-                {
-                    <p>List is empty.</p>
-                }
-                else
-                {
-                    <ul>
-                        @foreach (var item in Model)
-                        {
-                            <li>@item</li>
-                        }
-                    </ul>
-                }
-            </td>
-        </tr>
+    <tr>
+        <td>
+            @if (Model.Count == 0)
+            {
+                <p>List is empty.</p>
+            }
+            else
+            {
+                <ul>
+                    @foreach (var item in Model)
+                    {
+                        // Chuyển mỗi bookX thành link đến trang Details
+                        <li><a href="@Url.Action("Details", "CircularList", new { number = item.Number })">@item.ToString()</a></li>
+                    }
+                </ul>
+            }
+        </td>
+    </tr>
     </tbody>
 </table>
 
-<!-- Các Form Thao Tác -->
-
 <div class="row">
     <div class="col-md-6">
-        <!-- Form chèn vào đầu -->
-        <h3>Insert at Beginning 3</h3>
+        <h3>Insert at Beginning (Main)</h3>
         <form asp-action="InsertAtBeginning" method="post">
-            <div class="form-group">
-                <input type="number" name="data" class="form-control" placeholder="Enter value" required />
-            </div>
+            <input type="number" name="number" class="form-control mt-2" placeholder="Number" required />
+            <input type="text" name="title" class="form-control mt-2" placeholder="Title" required />
+            <input type="text" name="author" class="form-control mt-2" placeholder="Author" required />
+            <input type="text" name="publisher" class="form-control mt-2" placeholder="Publisher" required />
+            <input type="number" name="year" class="form-control mt-2" placeholder="Year" required />
+            <input type="text" name="isbn" class="form-control mt-2" placeholder="ISBN" required />
             <button type="submit" class="btn btn-primary mt-2">Insert</button>
         </form>
     </div>
 
     <div class="col-md-6">
-        <!-- Form chèn vào cuối -->
-        <h3>Insert at End</h3>
+        <h3>Insert at End (Main)</h3>
         <form asp-action="InsertAtEnd" method="post">
-            <div class="form-group">
-                <input type="number" name="data" class="form-control" placeholder="Enter value" required />
-            </div>
+            <input type="number" name="number" class="form-control mt-2" placeholder="Number" required />
+            <input type="text" name="title" class="form-control mt-2" placeholder="Title" required />
+            <input type="text" name="author" class="form-control mt-2" placeholder="Author" required />
+            <input type="text" name="publisher" class="form-control mt-2" placeholder="Publisher" required />
+            <input type="number" name="year" class="form-control mt-2" placeholder="Year" required />
+            <input type="text" name="isbn" class="form-control mt-2" placeholder="ISBN" required />
             <button type="submit" class="btn btn-primary mt-2">Insert</button>
         </form>
     </div>
@@ -72,26 +72,23 @@
 
 <div class="row mt-4">
     <div class="col-md-6">
-        <!-- Form chèn sau một nút -->
-        <h3>Insert After</h3>
+        <h3>Insert After (Main)</h3>
         <form asp-action="InsertAfter" method="post">
-            <div class="form-group">
-                <input type="number" name="target" class="form-control " placeholder="Target Value" required />
-            </div>
-            <div class="form-group">
-                <input type="number" name="data" class="form-control mt-2" placeholder="New Node Value" required />
-            </div>
+            <input type="number" name="targetNumber" class="form-control mt-2" placeholder="Target Number (for bookX)" required />
+            <input type="number" name="dataNumber" class="form-control mt-2" placeholder="New Book Number" required />
+            <input type="text" name="title" class="form-control mt-2" placeholder="Title" required />
+            <input type="text" name="author" class="form-control mt-2" placeholder="Author" required />
+            <input type="text" name="publisher" class="form-control mt-2" placeholder="Publisher" required />
+            <input type="number" name="year" class="form-control mt-2" placeholder="Year" required />
+            <input type="text" name="isbn" class="form-control mt-2" placeholder="ISBN" required />
             <button type="submit" class="btn btn-primary mt-2">Insert</button>
         </form>
     </div>
 
     <div class="col-md-6">
-        <!-- Form tìm kiếm -->
-        <h3>Search</h3>
+        <h3>Search (Main)</h3>
         <form asp-action="Search" method="get">
-            <div class="form-group">
-                <input type="number" name="target" class="form-control" placeholder="Value to Search" required />
-            </div>
+            <input type="number" name="targetNumber" class="form-control" placeholder="Number to Search (for bookX)" required />
             <button type="submit" class="btn btn-info mt-2">Search</button>
         </form>
         @if (ViewBag.Result != null)
@@ -103,8 +100,7 @@
 
 <div class="row mt-4">
     <div class="col-md-6">
-        <!-- Các nút thao tác khác -->
-        <h3>Other Operations</h3>
+        <h3>Other Operations (Main)</h3>
         <form asp-action="RemoveFirst" method="post" style="display:inline-block; margin-right:10px;">
             <button type="submit" class="btn btn-danger">Remove First</button>
         </form>
@@ -123,25 +119,62 @@
     </div>
 
     <div class="col-md-6">
-        <!-- Form gộp danh sách -->
-        <h3>Merge Lists</h3>
-        <form asp-action="Merge" method="post">
-            <div class="form-group">
-                <input type="text" name="otherList" class="form-control" placeholder="Enter numbers separated by comma" required />
-            </div>
-            <button type="submit" class="btn btn-primary mt-2">Merge</button>
+        <h3>Remove All Nodes Greater Than (Main)</h3>
+        <form asp-action="RemoveAllGreaterThan" method="post">
+            <input type="number" name="value" class="form-control" placeholder="Value" required />
+            <button type="submit" class="btn btn-danger mt-2">Remove</button>
+        </form>
+    </div>
+</div>
+
+<h2 class="mt-5">Secondary List (for Merge)</h2>
+<table class="table table-bordered">
+    <thead>
+    <tr>
+        <th>Nodes (Display as bookX)</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td>
+            @if (secondaryData == null || secondaryData.Count == 0)
+            {
+                <p>Secondary list is empty.</p>
+            }
+            else
+            {
+                <ul>
+                    @foreach (var item in secondaryData)
+                    {
+                        <li>@item.ToString()</li>
+                    }
+                </ul>
+            }
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<div class="row">
+    <div class="col-md-6">
+        <h3>Add a Book to Secondary List (Always at the end)</h3>
+        <form asp-action="InsertAtEnd_Secondary" method="post">
+            <input type="number" name="number" class="form-control mt-2" placeholder="Number" required />
+            <input type="text" name="title" class="form-control mt-2" placeholder="Title" required />
+            <input type="text" name="author" class="form-control mt-2" placeholder="Author" required />
+            <input type="text" name="publisher" class="form-control mt-2" placeholder="Publisher" required />
+            <input type="number" name="year" class="form-control mt-2" placeholder="Year" required />
+            <input type="text" name="isbn" class="form-control mt-2" placeholder="ISBN" required />
+            <button type="submit" class="btn btn-primary mt-2">Add to Secondary List</button>
         </form>
     </div>
 </div>
 
 <div class="row mt-4">
     <div class="col-md-6">
-        <h3>Remove All Nodes Greater Than</h3>
-        <form asp-action="RemoveAllGreaterThan" method="post">
-            <div class="form-group">
-                <input type="number" name="value" class="form-control" placeholder="Value" required />
-            </div>
-            <button type="submit" class="btn btn-danger mt-2">Remove</button>
+        <h3>Merge Secondary List into Main List</h3>
+        <form asp-action="MergeLists" method="post">
+            <button type="submit" class="btn btn-primary">Merge</button>
         </form>
     </div>
 </div>
@@ -153,15 +186,14 @@
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <script>
         const data = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model));
-    
         const width = 800;
         const height = 200;
-    
+
         const svg = d3.select("#linkedListVisualization")
             .append("svg")
             .attr("width", width)
             .attr("height", height);
-    
+
         if (data.length === 0) {
             svg.append("text")
                 .attr("x", width / 2)
@@ -172,8 +204,7 @@
             const nodeWidth = 50;
             const nodeHeight = 30;
             const spacing = 100;
-    
-            // ve hinh chu nhat
+
             data.forEach((d, i) => {
                 svg.append("rect")
                     .attr("x", 50 + i * spacing)
@@ -181,14 +212,14 @@
                     .attr("width", nodeWidth)
                     .attr("height", nodeHeight)
                     .attr("fill", "#69b3a2");
-    
+
                 svg.append("text")
                     .attr("x", 50 + i * spacing + nodeWidth / 2)
                     .attr("y", height / 2 + 5)
                     .attr("text-anchor", "middle")
                     .attr("fill", "white")
-                    .text(d);
-    
+                    .text("book" + d.Number);
+
                 if (i < data.length - 1) {
                     svg.append("line")
                         .attr("x1", 50 + i * spacing + nodeWidth)
@@ -207,7 +238,7 @@
                         .attr("marker-end", "url(#arrow)");
                 }
             });
-    
+
             svg.append("defs").append("marker")
                 .attr("id", "arrow")
                 .attr("viewBox", "0 0 10 10")

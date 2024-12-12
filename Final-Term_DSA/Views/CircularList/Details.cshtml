@@ -1,0 +1,36 @@
+﻿@model CircularLinkedListApp.Models.Book
+
+@{
+    ViewData["Title"] = "Book Details";
+}
+
+<h2>Book Details</h2>
+
+<table class="table table-bordered">
+    <tr>
+        <th>Number</th>
+        <td>@Model.Number</td>
+    </tr>
+    <tr>
+        <th>Title</th>
+        <td>@Model.Title</td>
+    </tr>
+    <tr>
+        <th>Author</th>
+        <td>@Model.Author</td>
+    </tr>
+    <tr>
+        <th>Publisher</th>
+        <td>@Model.Publisher</td>
+    </tr>
+    <tr>
+        <th>Year</th>
+        <td>@Model.Year</td>
+    </tr>
+    <tr>
+        <th>ISBN</th>
+        <td>@Model.ISBN</td>
+    </tr>
+</table>
+
+<a href="@Url.Action("Index", "CircularList")" class="btn btn-secondary">Back to List</a>

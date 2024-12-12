@@ -3,34 +3,30 @@ using System.Collections.Generic;
 
 namespace CircularLinkedListApp.Models
 {
-    // Mot so bien bat buoc dung int de code logic de hon
-    public class CircularLinkedList<T> where T : IComparable<T>
+    public class CircularLinkedList
     {
-        private Node<T> head;
+        private Node<Book> head;
 
         public CircularLinkedList()
         {
             head = null;
         }
 
-
         public bool IsEmpty()
         {
             return head == null;
         }
 
-
-        public Node<T> CreateNode(T data)
+        public Node<Book> CreateNode(Book data)
         {
-            return new Node<T>(data);
+            return new Node<Book>(data);
         }
-        
 
-        public bool Contains(T data)
+        public bool Contains(Book data)
         {
             if (IsEmpty()) return false;
 
-            Node<T> current = head;
+            Node<Book> current = head;
             do
             {
                 if (current.Data.CompareTo(data) == 0)
@@ -41,11 +37,9 @@ namespace CircularLinkedListApp.Models
             return false;
         }
 
-
-
-        public void InsertAtBeginning(T data)
+        public void InsertAtBeginning(Book data)
         {
-            Node<T> newNode = CreateNode(data);
+            Node<Book> newNode = CreateNode(data);
             if (IsEmpty())
             {
                 head = newNode;
@@ -53,7 +47,7 @@ namespace CircularLinkedListApp.Models
             }
             else
             {
-                Node<T> temp = head;
+                Node<Book> temp = head;
                 while (temp.Next != head)
                     temp = temp.Next;
 
@@ -63,10 +57,9 @@ namespace CircularLinkedListApp.Models
             }
         }
 
-
-        public void InsertAtEnd(T data)
+        public void InsertAtEnd(Book data)
         {
-            Node<T> newNode = CreateNode(data);
+            Node<Book> newNode = CreateNode(data);
             if (IsEmpty())
             {
                 head = newNode;
@@ -74,7 +67,7 @@ namespace CircularLinkedListApp.Models
             }
             else
             {
-                Node<T> temp = head;
+                Node<Book> temp = head;
                 while (temp.Next != head)
                     temp = temp.Next;
 
@@ -83,17 +76,16 @@ namespace CircularLinkedListApp.Models
             }
         }
 
-
-        public bool InsertAfter(T target, T data)
+        public bool InsertAfter(Book target, Book data)
         {
             if (IsEmpty()) return false;
 
-            Node<T> current = head;
+            Node<Book> current = head;
             do
             {
                 if (current.Data.CompareTo(target) == 0)
                 {
-                    Node<T> newNode = CreateNode(data);
+                    Node<Book> newNode = CreateNode(data);
                     newNode.Next = current.Next;
                     current.Next = newNode;
                     return true;
@@ -101,35 +93,32 @@ namespace CircularLinkedListApp.Models
                 current = current.Next;
             } while (current != head);
 
-            return false; 
+            return false;
         }
-        public bool InsertAtBeginningUnique(T data)
+
+        public bool InsertAtBeginningUnique(Book data)
         {
             if (Contains(data))
                 return false; 
-
             InsertAtBeginning(data);
             return true;
         }
 
-
-        public bool InsertAtEndUnique(T data)
+        public bool InsertAtEndUnique(Book data)
         {
             if (Contains(data))
                 return false; 
-
             InsertAtEnd(data);
             return true;
         }
-        
-        public bool InsertAfterUnique(T target, T data)
+
+        public bool InsertAfterUnique(Book target, Book data)
         {
             if (Contains(data))
                 return false; 
-
             return InsertAfter(target, data);
         }
-        
+
         public bool RemoveFirst()
         {
             if (IsEmpty()) return false;
@@ -140,7 +129,7 @@ namespace CircularLinkedListApp.Models
                 return true;
             }
 
-            Node<T> temp = head;
+            Node<Book> temp = head;
             while (temp.Next != head)
                 temp = temp.Next;
 
@@ -148,7 +137,7 @@ namespace CircularLinkedListApp.Models
             head = head.Next;
             return true;
         }
-        
+
         public bool RemoveLast()
         {
             if (IsEmpty()) return false;
@@ -159,8 +148,8 @@ namespace CircularLinkedListApp.Models
                 return true;
             }
 
-            Node<T> current = head;
-            Node<T> previous = null;
+            Node<Book> current = head;
+            Node<Book> previous = null;
 
             while (current.Next != head)
             {
@@ -171,19 +160,18 @@ namespace CircularLinkedListApp.Models
             previous.Next = head;
             return true;
         }
-        
-        public bool RemoveAfter(T target)
+
+        public bool RemoveAfter(Book target)
         {
             if (IsEmpty()) return false;
 
-            Node<T> current = head;
+            Node<Book> current = head;
             do
             {
                 if (current.Data.CompareTo(target) == 0)
                 {
                     if (current.Next == head)
                     {
-                        // Nếu nút sau là head
                         RemoveFirst();
                     }
                     else
@@ -197,12 +185,12 @@ namespace CircularLinkedListApp.Models
 
             return false; 
         }
-        
-        public Node<T> Search(T target)
+
+        public Node<Book> Search(Book target)
         {
             if (IsEmpty()) return null;
 
-            Node<T> current = head;
+            Node<Book> current = head;
             do
             {
                 if (current.Data.CompareTo(target) == 0)
@@ -212,13 +200,13 @@ namespace CircularLinkedListApp.Models
 
             return null; 
         }
-        
-        public List<Node<T>> SearchByCondition(Func<T, bool> condition)
+
+        public List<Node<Book>> SearchByCondition(Func<Book, bool> condition)
         {
-            List<Node<T>> result = new List<Node<T>>();
+            List<Node<Book>> result = new List<Node<Book>>();
             if (IsEmpty()) return result;
 
-            Node<T> current = head;
+            Node<Book> current = head;
             do
             {
                 if (condition(current.Data))
@@ -228,13 +216,13 @@ namespace CircularLinkedListApp.Models
 
             return result;
         }
-        
-        public List<T> PrintList()
+
+        public List<Book> PrintList()
         {
-            List<T> listData = new List<T>();
+            List<Book> listData = new List<Book>();
             if (IsEmpty()) return listData;
 
-            Node<T> current = head;
+            Node<Book> current = head;
             do
             {
                 listData.Add(current.Data);
@@ -243,16 +231,16 @@ namespace CircularLinkedListApp.Models
 
             return listData;
         }
-        
+
         public void SelectionSort()
         {
             if (IsEmpty()) return;
 
-            Node<T> current = head;
+            Node<Book> current = head;
             do
             {
-                Node<T> min = current;
-                Node<T> r = current.Next;
+                Node<Book> min = current;
+                Node<Book> r = current.Next;
 
                 while (r != head)
                 {
@@ -260,10 +248,10 @@ namespace CircularLinkedListApp.Models
                         min = r;
                     r = r.Next;
                 }
-                
+
                 if (min != current)
                 {
-                    T temp = current.Data;
+                    Book temp = current.Data;
                     current.Data = min.Data;
                     min.Data = temp;
                 }
@@ -271,15 +259,15 @@ namespace CircularLinkedListApp.Models
                 current = current.Next;
             } while (current.Next != head.Next);
         }
-        
+
         public void QuickSort()
         {
             if (IsEmpty()) return;
-            
-            List<T> dataList = PrintList();
+
+            List<Book> dataList = PrintList();
             QuickSortHelper(dataList, 0, dataList.Count - 1);
-            
-            Node<T> current = head;
+
+            Node<Book> current = head;
             int index = 0;
             while (current != null && index < dataList.Count)
             {
@@ -291,7 +279,7 @@ namespace CircularLinkedListApp.Models
             }
         }
 
-        private void QuickSortHelper(List<T> data, int low, int high)
+        private void QuickSortHelper(List<Book> data, int low, int high)
         {
             if (low < high)
             {
@@ -301,9 +289,9 @@ namespace CircularLinkedListApp.Models
             }
         }
 
-        private int Partition(List<T> data, int low, int high)
+        private int Partition(List<Book> data, int low, int high)
         {
-            T pivot = data[high];
+            Book pivot = data[high];
             int i = (low - 1);
             for (int j = low; j < high; j++)
             {
@@ -311,21 +299,20 @@ namespace CircularLinkedListApp.Models
                 {
                     i++;
                     // Swap
-                    T temp = data[i];
+                    Book temp = data[i];
                     data[i] = data[j];
                     data[j] = temp;
                 }
             }
             // Swap pivot
-            T temp1 = data[i + 1];
+            Book temp1 = data[i + 1];
             data[i + 1] = data[high];
             data[high] = temp1;
             return i + 1;
         }
-        
 
-        // 1. Gộp hai danh sách
-        public void Merge(CircularLinkedList<T> list2)
+        // Gộp hai danh sách
+        public void Merge(CircularLinkedList list2)
         {
             if (list2.IsEmpty()) return;
 
@@ -335,11 +322,11 @@ namespace CircularLinkedListApp.Models
                 return;
             }
 
-            Node<T> temp1 = this.head;
+            Node<Book> temp1 = this.head;
             while (temp1.Next != this.head)
                 temp1 = temp1.Next;
 
-            Node<T> temp2 = list2.head;
+            Node<Book> temp2 = list2.head;
             temp1.Next = temp2;
 
             while (temp2.Next != list2.head)
@@ -348,11 +335,11 @@ namespace CircularLinkedListApp.Models
             temp2.Next = this.head;
         }
 
-        // 2. Loại bỏ tất cả các nút thỏa mãn điều kiện
-        public void RemoveAll(Func<T, bool> condition)
+        // Loại bỏ tất cả các nút thỏa mãn điều kiện
+        public void RemoveAll(Func<Book, bool> condition)
         {
             if (IsEmpty()) return;
-            
+
             while (head != null && condition(head.Data))
             {
                 if (head.Next == head)
@@ -361,17 +348,17 @@ namespace CircularLinkedListApp.Models
                     return;
                 }
 
-                Node<T> temp = head;
+                Node<Book> temp = head;
                 while (temp.Next != head)
                     temp = temp.Next;
 
                 temp.Next = head.Next;
                 head = head.Next;
             }
-            
+
             if (head == null) return;
 
-            Node<T> current = head;
+            Node<Book> current = head;
             while (current.Next != head)
             {
                 if (condition(current.Next.Data))
@@ -384,14 +371,14 @@ namespace CircularLinkedListApp.Models
                 }
             }
         }
-        
+
         public void Reverse()
         {
             if (IsEmpty() || head.Next == head) return;
 
-            Node<T> prev = null;
-            Node<T> current = head;
-            Node<T> next = null;
+            Node<Book> prev = null;
+            Node<Book> current = head;
+            Node<Book> next = null;
             do
             {
                 next = current.Next;
@@ -399,7 +386,7 @@ namespace CircularLinkedListApp.Models
                 prev = current;
                 current = next;
             } while (current != head);
-            
+
             head.Next = prev;
             head = prev;
         }
