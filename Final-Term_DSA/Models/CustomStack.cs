@@ -129,7 +129,6 @@ namespace CircularLinkedListApp.Models
                 current = current.Next;
             }
         }
-
         // Quick Sort
         public void QuickSort()
         {
@@ -163,7 +162,7 @@ namespace CircularLinkedListApp.Models
                 QuickSortHelper(data, pi + 1, high);
             }
         }
-
+        
         private int Partition(List<T> data, int low, int high)
         {
             T pivot = data[high];
@@ -185,7 +184,6 @@ namespace CircularLinkedListApp.Models
             data[high] = temp1;
             return i + 1;
         }
-        
 
         // 1. Gộp hai stack
         public void Merge(CustomStack<T> stack2)

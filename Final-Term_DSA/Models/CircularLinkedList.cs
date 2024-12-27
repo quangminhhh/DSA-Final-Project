@@ -310,8 +310,7 @@ namespace CircularLinkedListApp.Models
             data[high] = temp1;
             return i + 1;
         }
-
-        // Gộp hai danh sách
+        
         public void Merge(CircularLinkedList list2)
         {
             if (list2.IsEmpty()) return;
@@ -334,8 +333,7 @@ namespace CircularLinkedListApp.Models
 
             temp2.Next = this.head;
         }
-
-        // Loại bỏ tất cả các nút thỏa mãn điều kiện
+        
         public void RemoveAll(Func<Book, bool> condition)
         {
             if (IsEmpty()) return;

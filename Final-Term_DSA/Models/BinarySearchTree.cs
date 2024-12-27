@@ -11,8 +11,7 @@ namespace CircularLinkedListApp.Models
         {
             Root = null;
         }
-
-
+        
         public bool Insert(T data)
         {
             if (Root == null)

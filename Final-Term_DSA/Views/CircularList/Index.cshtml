@@ -32,7 +32,6 @@
                 <ul>
                     @foreach (var item in Model)
                     {
-                        // Chuyển mỗi bookX thành link đến trang Details
                         <li><a href="@Url.Action("Details", "CircularList", new { number = item.Number })">@item.ToString()</a></li>
                     }
                 </ul>
@@ -44,7 +43,7 @@
 
 <div class="row">
     <div class="col-md-6">
-        <h3>Insert at Beginning (Main)</h3>
+        <h3>Insert at Beginning</h3>
         <form asp-action="InsertAtBeginning" method="post">
             <input type="number" name="number" class="form-control mt-2" placeholder="Number" required />
             <input type="text" name="title" class="form-control mt-2" placeholder="Title" required />
@@ -57,7 +56,7 @@
     </div>
 
     <div class="col-md-6">
-        <h3>Insert at End (Main)</h3>
+        <h3>Insert at End</h3>
         <form asp-action="InsertAtEnd" method="post">
             <input type="number" name="number" class="form-control mt-2" placeholder="Number" required />
             <input type="text" name="title" class="form-control mt-2" placeholder="Title" required />
@@ -72,7 +71,7 @@
 
 <div class="row mt-4">
     <div class="col-md-6">
-        <h3>Insert After (Main)</h3>
+        <h3>Insert After</h3>
         <form asp-action="InsertAfter" method="post">
             <input type="number" name="targetNumber" class="form-control mt-2" placeholder="Target Number (for bookX)" required />
             <input type="number" name="dataNumber" class="form-control mt-2" placeholder="New Book Number" required />
@@ -86,7 +85,7 @@
     </div>
 
     <div class="col-md-6">
-        <h3>Search (Main)</h3>
+        <h3>Search</h3>
         <form asp-action="Search" method="get">
             <input type="number" name="targetNumber" class="form-control" placeholder="Number to Search (for bookX)" required />
             <button type="submit" class="btn btn-info mt-2">Search</button>
@@ -100,7 +99,7 @@
 
 <div class="row mt-4">
     <div class="col-md-6">
-        <h3>Other Operations (Main)</h3>
+        <h3>Other Operations</h3>
         <form asp-action="RemoveFirst" method="post" style="display:inline-block; margin-right:10px;">
             <button type="submit" class="btn btn-danger">Remove First</button>
         </form>
@@ -119,7 +118,7 @@
     </div>
 
     <div class="col-md-6">
-        <h3>Remove All Nodes Greater Than (Main)</h3>
+        <h3>Remove All Nodes Greater Than</h3>
         <form asp-action="RemoveAllGreaterThan" method="post">
             <input type="number" name="value" class="form-control" placeholder="Value" required />
             <button type="submit" class="btn btn-danger mt-2">Remove</button>
@@ -157,7 +156,7 @@
 
 <div class="row">
     <div class="col-md-6">
-        <h3>Add a Book to Secondary List (Always at the end)</h3>
+        <h3>Add a Book to Secondary List</h3>
         <form asp-action="InsertAtEnd_Secondary" method="post">
             <input type="number" name="number" class="form-control mt-2" placeholder="Number" required />
             <input type="text" name="title" class="form-control mt-2" placeholder="Title" required />

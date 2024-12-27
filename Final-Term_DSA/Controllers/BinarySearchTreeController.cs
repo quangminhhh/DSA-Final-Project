@@ -8,17 +8,13 @@ namespace CircularLinkedListApp.Controllers
 {
     public class BinarySearchTreeController : Controller
     {
-        // Tạo một BST tĩnh để lưu trữ dữ liệu trong suốt phiên làm việc
         private static BinarySearchTree<int> bst = new BinarySearchTree<int>();
-
-        // GET: BinarySearchTree
+        
         public IActionResult Index()
         {
             var traversal = bst.InOrderTraversal(); // Bạn có thể thay đổi phương thức traverse theo nhu cầu
             return View(traversal);
         }
-
-        // POST: Insert
         [HttpPost]
         public IActionResult Insert(int data)
         {
@@ -26,8 +22,6 @@ namespace CircularLinkedListApp.Controllers
             TempData["Message"] = result ? $"Inserted {data} successfully." : $"Insert failed: {data} already exists in the BST.";
             return RedirectToAction("Index");
         }
-
-        // POST: Delete
         [HttpPost]
         public IActionResult Delete(int data)
         {
